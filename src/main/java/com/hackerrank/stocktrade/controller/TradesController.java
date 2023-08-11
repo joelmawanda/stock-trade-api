@@ -63,7 +63,7 @@ public class TradesController {
         return new ResponseEntity<>(new ApiResponse(trade), HttpStatus.OK);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public ResponseEntity<?> addANewUser(@RequestBody User userDTO){
 
         User new_user = tradeService.addANewUser(userDTO);
@@ -75,5 +75,11 @@ public class TradesController {
     public ResponseEntity<?> getTradeByUserId (@PathVariable("userId") @NotNull(message = "Id cannot be null") Long userId) throws NoTradeFoundException {
         UserDTO user = tradeService.getTradeByUserId(userId);
         return new ResponseEntity<>(new ApiResponse(user), HttpStatus.OK);
+    }
+
+    @PutMapping("/users/update")
+    public ResponseEntity<?> updateUser(@RequestParam("userId") @NotNull(message = "UserId cannot be null") Long userId, @RequestBody User user) {
+            User updatedUser = tradeService.updateUser(userId, user);
+            return new ResponseEntity<>(new ApiResponse(updatedUser), HttpStatus.OK);
     }
 }

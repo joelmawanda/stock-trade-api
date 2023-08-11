@@ -1,5 +1,6 @@
 package com.hackerrank.stocktrade.service;
 
+import com.hackerrank.stocktrade.ApplicationConfig.ServiceUtils;
 import com.hackerrank.stocktrade.DTOs.TradeDTO;
 import com.hackerrank.stocktrade.DTOs.UserDTO;
 import com.hackerrank.stocktrade.exception.NoTradeFoundException;
@@ -35,10 +36,12 @@ public class TradeService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ServiceUtils serviceUtils;
+
     public void eraseAllTrades (){
         tradeRepository.deleteAll();
     }
-
 
     public Trade addANewTrade(String type, String symbol, Integer shares, Float price, User user) throws DuplicateKeyException {
         log.info("[Inside the addANewTrade method]: Adding a new trade");
@@ -89,4 +92,21 @@ public class TradeService {
         return userDTO;
 
     }
+
+    public User updateUser(Long userId, User user) throws NoTradeFoundException {
+
+        User oldUser = userRepository.findById(userId).orElse(null);
+
+        if (oldUser == null) {
+            throw new NoTradeFoundException("User id: " + userId + " does not exist");
+        }
+
+        //update the user object by copying the properties from the new object to the old object
+        serviceUtils.copyNonNullProperties(user, oldUser);
+
+        return userRepository.save(oldUser);
+
+    }
+
 }
+
